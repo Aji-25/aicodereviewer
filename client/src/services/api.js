@@ -9,10 +9,12 @@ const apiClient = axios.create({
   },
 });
 
-export const reviewCode = async (code, language) => {
+export const reviewCode = async (code, language, options = {}) => {
   const response = await apiClient.post('/api/review', {
     code,
     language,
+  }, {
+    signal: options.signal, // Support for AbortController
   });
   return response.data;
 };
