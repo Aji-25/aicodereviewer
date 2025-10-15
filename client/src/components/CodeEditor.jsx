@@ -1,15 +1,25 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import Editor from '@monaco-editor/react';
 import { Loader2 } from 'lucide-react';
 import { reviewCode } from '../services/api';
 
-function CodeEditor({ onReviewResult, onReviewError }) {
+const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, ref) => {
   const [code, setCode] = useState('// Start typing or paste your code here...\n');
   const [language, setLanguage] = useState('javascript');
   const [isReviewing, setIsReviewing] = useState(false);
   
   const debounceTimerRef = useRef(null);
   const abortControllerRef = useRef(null);
+
+  // Expose method to update code from parent
+  useImperativeHandle(ref, () => ({
+    updateCode: (newCode) => {
+      setCode(newCode);
+      if (onCodeChange) {
+        onCodeChange(newCode);
+      }
+    }
+  }));
 
   useEffect(() => {
     // Cleanup on unmount
@@ -25,6 +35,11 @@ function CodeEditor({ onReviewResult, onReviewError }) {
 
   const handleCodeChange = (value) => {
     setCode(value || '');
+
+    // Notify parent of code change
+    if (onCodeChange) {
+      onCodeChange(value || '');
+    }
 
     // Clear existing debounce timer
     if (debounceTimerRef.current) {
@@ -140,6 +155,8 @@ function CodeEditor({ onReviewResult, onReviewError }) {
       </div>
     </div>
   );
-}
+});
+
+CodeEditor.displayName = 'CodeEditor';
 
 export default CodeEditor;
