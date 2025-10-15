@@ -56,10 +56,10 @@ const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, 
       return;
     }
 
-    // Set new debounce timer (500ms)
+    // Set new debounce timer (2000ms / 2 seconds - increased to avoid rate limits)
     debounceTimerRef.current = setTimeout(() => {
       triggerReview(value);
-    }, 500);
+    }, 2000);
   };
 
   const triggerReview = async (codeToReview) => {

@@ -17,11 +17,18 @@ app.use(cors({
 app.use(express.json());
 
 // Health check route
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'ok',
     message: 'AIReviewMate API is running',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Legacy health check (for backward compatibility)
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'ok'
   });
 });
 
