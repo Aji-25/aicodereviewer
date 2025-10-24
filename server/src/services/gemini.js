@@ -59,54 +59,29 @@ Important:
     const response = await result.response;
     const text = response.text();
 
-    // Try to parse JSON from the response
+    // Parse JSON from the response
     let parsedResponse;
     try {
       // Remove markdown code blocks if present
-      let cleanedText = text.trim();
-      
-      // Remove ```json and ``` markers
-      cleanedText = cleanedText.replace(/^```json\s*/i, '');
-      cleanedText = cleanedText.replace(/^```\s*/, '');
-      cleanedText = cleanedText.replace(/\s*```$/, '');
-      cleanedText = cleanedText.trim();
-      
+      const cleanedText = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/g, '');
       parsedResponse = JSON.parse(cleanedText);
     } catch (parseError) {
-      console.error('Failed to parse Gemini response:', text.substring(0, 200));
-      
-      // Try to extract JSON from the text
+      // Try to extract JSON from the text as fallback
       const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        try {
-          parsedResponse = JSON.parse(jsonMatch[0]);
-        } catch (e) {
-          throw new Error('Failed to parse AI response. The AI returned invalid JSON.');
-        }
-      } else {
-        throw new Error('Failed to parse AI response. No JSON found in response.');
+      if (!jsonMatch) {
+        throw new Error('Failed to parse AI response. No valid JSON found.');
       }
+      parsedResponse = JSON.parse(jsonMatch[0]);
     }
 
     // Validate response structure
-    if (!parsedResponse.improvedCode || !parsedResponse.explanation || !parsedResponse.category) {
-      console.error('Invalid response structure:', parsedResponse);
+    if (!parsedResponse.improvedCode?.trim() || !parsedResponse.explanation?.trim() || !parsedResponse.category) {
       throw new Error('Invalid response structure from AI. Missing required fields.');
     }
 
     // Validate and normalize category
     if (!CATEGORIES.includes(parsedResponse.category)) {
-      console.warn(`Invalid category "${parsedResponse.category}", using fallback`);
-      parsedResponse.category = 'Code Quality'; // Default fallback
-    }
-
-    // Ensure strings are not empty
-    if (parsedResponse.improvedCode.trim().length === 0) {
-      throw new Error('AI returned empty improved code');
-    }
-
-    if (parsedResponse.explanation.trim().length === 0) {
-      throw new Error('AI returned empty explanation');
+      parsedResponse.category = 'Code Quality';
     }
 
     return parsedResponse;

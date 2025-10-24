@@ -1,9 +1,17 @@
 import React from 'react';
+<<<<<<< HEAD
 import { Code2, Activity, Github, LogOut } from 'lucide-react';
 
 function Navbar({ isBackendConnected, isCheckingConnection, githubToken, onGithubDisconnect }) {
   const handleGithubConnect = () => {
     window.location.href = 'http://localhost:3000/api/github/login';
+=======
+import { Code2, Github, LogOut } from 'lucide-react';
+
+function Navbar({ githubToken, onGithubDisconnect }) {
+  const handleGithubConnect = () => {
+    window.location.href = `${import.meta.env.VITE_API_URL}/api/github/login`;
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   };
 
   return (
@@ -25,6 +33,7 @@ function Navbar({ isBackendConnected, isCheckingConnection, githubToken, onGithu
             </div>
           </div>
 
+<<<<<<< HEAD
           {/* Right Side - Status & GitHub */}
           <div className="flex items-center space-x-4">
             {/* Backend Status Indicator */}
@@ -53,6 +62,10 @@ function Navbar({ isBackendConnected, isCheckingConnection, githubToken, onGithu
               </span>
             </div>
 
+=======
+          {/* Right Side - GitHub */}
+          <div className="flex items-center space-x-4">
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
             {/* GitHub Connect/Disconnect Button */}
             {githubToken ? (
               <div className="flex items-center gap-2">

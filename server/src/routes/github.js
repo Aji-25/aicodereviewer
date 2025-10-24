@@ -33,6 +33,7 @@ if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET || !GITHUB_REDIRECT_URI) {
  * Returns: Redirect to GitHub OAuth authorization page
  */
 router.get('/login', (req, res) => {
+<<<<<<< HEAD
   // Validate required environment variables
   if (!GITHUB_CLIENT_ID || !GITHUB_REDIRECT_URI) {
     console.error('❌ GitHub OAuth login failed: Missing configuration');
@@ -47,15 +48,28 @@ router.get('/login', (req, res) => {
   }
 
   // Construct GitHub OAuth authorization URL
+=======
+  if (!GITHUB_CLIENT_ID || !GITHUB_REDIRECT_URI) {
+    return res.status(500).json({
+      error: 'GitHub OAuth not configured',
+      message: 'Missing GITHUB_CLIENT_ID or GITHUB_REDIRECT_URI environment variables'
+    });
+  }
+
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   const githubAuthUrl = new URL('https://github.com/login/oauth/authorize');
   githubAuthUrl.searchParams.append('client_id', GITHUB_CLIENT_ID);
   githubAuthUrl.searchParams.append('redirect_uri', GITHUB_REDIRECT_URI);
   githubAuthUrl.searchParams.append('scope', 'repo');
   githubAuthUrl.searchParams.append('allow_signup', 'true');
+<<<<<<< HEAD
 
   console.log('🔐 Redirecting to GitHub OAuth login...');
   
   // Redirect user to GitHub authorization page
+=======
+  
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   res.redirect(githubAuthUrl.toString());
 });
 
@@ -72,25 +86,38 @@ router.get('/login', (req, res) => {
 router.get('/callback', async (req, res) => {
   const { code } = req.query;
   
+<<<<<<< HEAD
   // Validate authorization code
   if (!code) {
     console.error('❌ GitHub OAuth callback failed: Missing authorization code');
+=======
+  if (!code) {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     return res.status(400).json({
       error: 'Missing authorization code'
     });
   }
 
+<<<<<<< HEAD
   // Validate environment variables
   if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
     console.error('❌ GitHub OAuth callback failed: Missing configuration');
     return res.status(500).json({
       error: 'GitHub OAuth not configured',
       message: 'Missing GITHUB_CLIENT_ID or GITHUB_CLIENT_SECRET environment variables'
+=======
+  if (!GITHUB_CLIENT_ID || !GITHUB_CLIENT_SECRET) {
+    return res.status(500).json({
+      error: 'GitHub OAuth not configured'
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     });
   }
 
   try {
+<<<<<<< HEAD
     console.log('🔄 Exchanging authorization code for access token...');
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
 
     // Exchange code for access token
     const tokenResponse = await fetch('https://github.com/login/oauth/access_token', {
@@ -112,6 +139,7 @@ router.get('/callback', async (req, res) => {
 
     const tokenData = await tokenResponse.json();
 
+<<<<<<< HEAD
     // Check for errors in GitHub's response
     if (tokenData.error) {
       console.error('❌ GitHub OAuth error:', tokenData.error_description || tokenData.error);
@@ -133,6 +161,16 @@ router.get('/callback', async (req, res) => {
     }
 
     console.log('✅ Access token obtained successfully');
+=======
+    if (tokenData.error || !tokenData.access_token) {
+      return res.status(500).json({
+        error: 'GitHub OAuth failed',
+        message: tokenData.error_description || 'No access token received'
+      });
+    }
+
+    const accessToken = tokenData.access_token;
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
 
     // Redirect to frontend with token
     const frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -140,7 +178,10 @@ router.get('/callback', async (req, res) => {
     
     res.redirect(redirectUrl);
   } catch (error) {
+<<<<<<< HEAD
     console.error('❌ GitHub OAuth callback error:', error.message);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     res.status(500).json({
       error: 'GitHub OAuth failed',
       message: error.message
@@ -159,17 +200,24 @@ router.get('/callback', async (req, res) => {
  * Returns: JSON object with repos array
  */
 router.get('/repos', async (req, res) => {
+<<<<<<< HEAD
   // Extract access token from Authorization header
   const authHeader = req.headers.authorization;
   
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     console.error('❌ GitHub repos request failed: Missing access token');
+=======
+  const authHeader = req.headers.authorization;
+  
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     return res.status(401).json({
       error: 'Missing access token',
       message: 'Authorization header with Bearer token is required'
     });
   }
 
+<<<<<<< HEAD
   const accessToken = authHeader.substring(7); // Remove "Bearer " prefix
 
   if (!accessToken) {
@@ -181,6 +229,11 @@ router.get('/repos', async (req, res) => {
 
   try {
     console.log('📦 Fetching GitHub repositories...');
+=======
+  const accessToken = authHeader.substring(7);
+
+  try {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
 
     // Fetch user's repositories from GitHub API
     const reposResponse = await fetch('https://api.github.com/user/repos', {
@@ -192,9 +245,13 @@ router.get('/repos', async (req, res) => {
       }
     });
 
+<<<<<<< HEAD
     // Handle authentication errors
     if (reposResponse.status === 401) {
       console.error('❌ GitHub authentication failed: Invalid or expired token');
+=======
+    if (reposResponse.status === 401) {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       return res.status(401).json({
         error: 'Invalid or expired token',
         message: 'Please re-authenticate with GitHub'
@@ -216,6 +273,7 @@ router.get('/repos', async (req, res) => {
       url: repo.html_url
     }));
 
+<<<<<<< HEAD
     console.log(`✅ Retrieved ${repos.length} repositories`);
 
     res.json({
@@ -223,6 +281,10 @@ router.get('/repos', async (req, res) => {
     });
   } catch (error) {
     console.error('❌ GitHub repos fetch error:', error.message);
+=======
+    res.json({ repos });
+  } catch (error) {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     res.status(500).json({
       error: 'Failed to fetch repositories',
       message: error.message
@@ -243,6 +305,7 @@ router.get('/repos', async (req, res) => {
 router.post('/pull-request', async (req, res) => {
   const { accessToken, owner, repo, filePath, improvedCode, category, explanation } = req.body;
   
+<<<<<<< HEAD
   // Validate required fields
   const missingParams = [];
   if (!accessToken) missingParams.push('accessToken');
@@ -258,6 +321,11 @@ router.post('/pull-request', async (req, res) => {
     return res.status(400).json({
       error: 'Missing required fields',
       missing: missingParams
+=======
+  if (!accessToken || !owner || !repo || !filePath || !improvedCode || !category || !explanation) {
+    return res.status(400).json({
+      error: 'Missing required fields'
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     });
   }
 
@@ -271,10 +339,14 @@ router.post('/pull-request', async (req, res) => {
   };
 
   try {
+<<<<<<< HEAD
     console.log(`🚀 Creating PR for ${owner}/${repo}:${filePath}`);
 
     // Step A: Fetch base branch (main) SHA
     console.log('📍 Step 1: Fetching main branch SHA...');
+=======
+    // Step A: Fetch base branch (main) SHA
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     const refResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/refs/heads/main`,
       {
@@ -284,7 +356,10 @@ router.post('/pull-request', async (req, res) => {
     );
 
     if (refResponse.status === 401) {
+<<<<<<< HEAD
       console.error('❌ GitHub authentication failed');
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       return res.status(401).json({
         error: 'Invalid or expired token',
         message: 'Please re-authenticate with GitHub'
@@ -292,17 +367,25 @@ router.post('/pull-request', async (req, res) => {
     }
 
     if (!refResponse.ok) {
+<<<<<<< HEAD
       const errorData = await refResponse.json().catch(() => ({}));
       console.error('❌ Failed to fetch main branch:', errorData);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       throw new Error(`Failed to fetch main branch: ${refResponse.status}`);
     }
 
     const refData = await refResponse.json();
     const mainBranchSHA = refData.object.sha;
+<<<<<<< HEAD
     console.log(`✅ Main branch SHA: ${mainBranchSHA.substring(0, 7)}`);
 
     // Step B: Create new branch
     console.log(`📍 Step 2: Creating branch ${branchName}...`);
+=======
+
+    // Step B: Create new branch
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     const createBranchResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/git/refs`,
       {
@@ -316,7 +399,10 @@ router.post('/pull-request', async (req, res) => {
     );
 
     if (createBranchResponse.status === 409) {
+<<<<<<< HEAD
       console.error('❌ Branch conflict: Branch already exists');
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       return res.status(409).json({
         error: 'Branch conflict',
         message: 'A branch with this name already exists. Please try again.'
@@ -324,6 +410,7 @@ router.post('/pull-request', async (req, res) => {
     }
 
     if (!createBranchResponse.ok) {
+<<<<<<< HEAD
       const errorData = await createBranchResponse.json().catch(() => ({}));
       console.error('❌ Failed to create branch:', errorData);
       throw new Error(`Failed to create branch: ${createBranchResponse.status}`);
@@ -333,6 +420,12 @@ router.post('/pull-request', async (req, res) => {
 
     // Step C: Get current file info
     console.log(`📍 Step 3: Fetching file info for ${filePath}...`);
+=======
+      throw new Error(`Failed to create branch: ${createBranchResponse.status}`);
+    }
+
+    // Step C: Get current file info
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     const fileResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
       {
@@ -342,17 +435,25 @@ router.post('/pull-request', async (req, res) => {
     );
 
     if (!fileResponse.ok) {
+<<<<<<< HEAD
       const errorData = await fileResponse.json().catch(() => ({}));
       console.error('❌ Failed to fetch file:', errorData);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       throw new Error(`Failed to fetch file: ${fileResponse.status}`);
     }
 
     const fileData = await fileResponse.json();
     const fileSHA = fileData.sha;
+<<<<<<< HEAD
     console.log(`✅ File SHA: ${fileSHA.substring(0, 7)}`);
 
     // Step D: Commit improved code
     console.log('📍 Step 4: Committing improved code...');
+=======
+
+    // Step D: Commit improved code
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     const improvedCodeBase64 = Buffer.from(improvedCode).toString('base64');
     
     const commitResponse = await fetch(
@@ -370,6 +471,7 @@ router.post('/pull-request', async (req, res) => {
     );
 
     if (!commitResponse.ok) {
+<<<<<<< HEAD
       const errorData = await commitResponse.json().catch(() => ({}));
       console.error('❌ Failed to commit code:', errorData);
       throw new Error(`Failed to commit code: ${commitResponse.status}`);
@@ -379,6 +481,12 @@ router.post('/pull-request', async (req, res) => {
 
     // Step E: Create Pull Request
     console.log('📍 Step 5: Creating pull request...');
+=======
+      throw new Error(`Failed to commit code: ${commitResponse.status}`);
+    }
+
+    // Step E: Create Pull Request
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     const prResponse = await fetch(
       `https://api.github.com/repos/${owner}/${repo}/pulls`,
       {
@@ -395,11 +503,15 @@ router.post('/pull-request', async (req, res) => {
 
     if (!prResponse.ok) {
       const errorData = await prResponse.json().catch(() => ({}));
+<<<<<<< HEAD
       console.error('❌ Failed to create pull request:', errorData);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       throw new Error(`Failed to create PR: ${prResponse.status} - ${errorData.message || 'Unknown error'}`);
     }
 
     const prData = await prResponse.json();
+<<<<<<< HEAD
     const prUrl = prData.html_url;
     const prNumber = prData.number;
 
@@ -410,11 +522,22 @@ router.post('/pull-request', async (req, res) => {
       success: true,
       url: prUrl,
       number: prNumber,
+=======
+
+    // Return success
+    res.json({
+      success: true,
+      url: prData.html_url,
+      number: prData.number,
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
       branch: branchName
     });
 
   } catch (error) {
+<<<<<<< HEAD
     console.error('❌ PR creation error:', error.message);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
     res.status(500).json({
       error: 'Failed to create pull request',
       message: error.message

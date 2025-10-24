@@ -15,9 +15,7 @@ const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, 
   useImperativeHandle(ref, () => ({
     updateCode: (newCode) => {
       setCode(newCode);
-      if (onCodeChange) {
-        onCodeChange(newCode);
-      }
+      onCodeChange?.(newCode);
     }
   }));
 
@@ -34,12 +32,9 @@ const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, 
   }, []);
 
   const handleCodeChange = (value) => {
-    setCode(value || '');
-
-    // Notify parent of code change
-    if (onCodeChange) {
-      onCodeChange(value || '');
-    }
+    const newCode = value || '';
+    setCode(newCode);
+    onCodeChange?.(newCode);
 
     // Clear existing debounce timer
     if (debounceTimerRef.current) {
@@ -74,9 +69,7 @@ const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, 
       });
 
       // If we got here, request completed successfully
-      if (onReviewResult) {
-        onReviewResult(result);
-      }
+      onReviewResult?.(result);
     } catch (error) {
       // Ignore abort errors (they're expected when cancelling)
       if (error.name === 'AbortError' || error.name === 'CanceledError') {
@@ -85,9 +78,7 @@ const CodeEditor = forwardRef(({ onReviewResult, onReviewError, onCodeChange }, 
       }
 
       console.error('Review error:', error);
-      if (onReviewError) {
-        onReviewError(error.message || 'Failed to review code');
-      }
+      onReviewError?.(error.message || 'Failed to review code');
     } finally {
       setIsReviewing(false);
     }

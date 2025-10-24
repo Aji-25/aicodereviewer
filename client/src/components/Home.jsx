@@ -15,6 +15,7 @@ function Home({ githubToken }) {
     setReviewResult(result);
     setError(null);
     setIsAccepted(false);
+<<<<<<< HEAD
   };
 
   const handleReviewError = (errorMessage) => {
@@ -23,6 +24,8 @@ function Home({ githubToken }) {
 
   const handleCodeChange = (code) => {
     setCurrentCode(code);
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   };
 
   const handleAccept = () => {
@@ -44,8 +47,8 @@ function Home({ githubToken }) {
       <CodeEditor 
         ref={editorRef}
         onReviewResult={handleReviewResult}
-        onReviewError={handleReviewError}
-        onCodeChange={handleCodeChange}
+        onReviewError={setError}
+        onCodeChange={setCurrentCode}
       />
 
       {/* Right Panel - AI Suggestions or Diff View */}

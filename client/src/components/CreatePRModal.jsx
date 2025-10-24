@@ -20,7 +20,11 @@ function CreatePRModal({ improvedCode, category, explanation, githubToken, onClo
     setError(null);
 
     try {
+<<<<<<< HEAD
       const response = await fetch('http://localhost:3000/api/github/repos', {
+=======
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/github/repos`, {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
         headers: {
           'Authorization': `Bearer ${githubToken}`
         }
@@ -56,7 +60,11 @@ function CreatePRModal({ improvedCode, category, explanation, githubToken, onClo
       // Parse owner and repo from full_name (e.g., "owner/repo")
       const [owner, repo] = selectedRepo.split('/');
 
+<<<<<<< HEAD
       const response = await fetch('http://localhost:3000/api/github/pull-request', {
+=======
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/github/pull-request`, {
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -90,9 +98,12 @@ function CreatePRModal({ improvedCode, category, explanation, githubToken, onClo
     }
   };
 
+<<<<<<< HEAD
   // Get the selected repo object for display
   const selectedRepoObj = repos.find(r => r.full_name === selectedRepo);
 
+=======
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden animate-fade-in">
@@ -177,11 +188,21 @@ function CreatePRModal({ improvedCode, category, explanation, githubToken, onClo
                   </select>
                 )}
 
+<<<<<<< HEAD
                 {selectedRepoObj && (
                   <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
                     <div className="flex items-center justify-between text-sm">
                       <span className="text-gray-600">Default Branch:</span>
                       <span className="font-medium text-gray-900">{selectedRepoObj.default_branch}</span>
+=======
+                {selectedRepo && (
+                  <div className="mt-2 p-3 bg-gray-50 border border-gray-200 rounded-lg">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600">Default Branch:</span>
+                      <span className="font-medium text-gray-900">
+                        {repos.find(r => r.full_name === selectedRepo)?.default_branch}
+                      </span>
+>>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
                     </div>
                   </div>
                 )}

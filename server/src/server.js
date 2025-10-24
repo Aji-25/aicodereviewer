@@ -11,11 +11,12 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middleware
-app.use(cors({
+const corsOptions = {
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
-}));
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Health check route
@@ -24,13 +25,6 @@ app.get('/api/health', (req, res) => {
     status: 'ok',
     message: 'AIReviewMate API is running',
     timestamp: new Date().toISOString()
-  });
-});
-
-// Legacy health check (for backward compatibility)
-app.get('/health', (req, res) => {
-  res.json({
-    status: 'ok'
   });
 });
 

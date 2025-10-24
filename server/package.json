@@ -15,7 +15,7 @@
     "express"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "UNLICENSED",
   "dependencies": {
     "@google/generative-ai": "^0.3.0",
     "cors": "^2.8.5",

@@ -7,16 +7,13 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
   const [copied, setCopied] = useState(false);
   const [showPRModal, setShowPRModal] = useState(false);
 
-  const getCategoryColor = (category) => {
-    const colors = {
-      'Best Practices': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Better Performance': 'bg-green-100 text-green-700 border-green-200',
-      'Bug Fix': 'bg-red-100 text-red-700 border-red-200',
-      'Code Quality': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Security': 'bg-orange-100 text-orange-700 border-orange-200',
-      'Readability': 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    };
-    return colors[category] || 'bg-gray-100 text-gray-700 border-gray-200';
+  const categoryColors = {
+    'Best Practices': 'bg-blue-100 text-blue-700 border-blue-200',
+    'Better Performance': 'bg-green-100 text-green-700 border-green-200',
+    'Bug Fix': 'bg-red-100 text-red-700 border-red-200',
+    'Code Quality': 'bg-purple-100 text-purple-700 border-purple-200',
+    'Security': 'bg-orange-100 text-orange-700 border-orange-200',
+    'Readability': 'bg-indigo-100 text-indigo-700 border-indigo-200',
   };
 
   const handleCopy = async () => {
@@ -66,7 +63,7 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
         <div className="p-4 space-y-4">
           {/* Category Badge */}
           <div className="flex items-center gap-2">
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getCategoryColor(category)}`}>
+            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
               {category}
             </span>
           </div>
