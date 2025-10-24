@@ -3,10 +3,6 @@ import Navbar from './components/Navbar'
 import Home from './components/Home'
 
 function App() {
-<<<<<<< HEAD
-  const { isConnected, isChecking } = useBackendStatus()
-=======
->>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   const [githubToken, setGithubToken] = useState(localStorage.getItem('github_token'))
 
   // Handle GitHub OAuth callback
@@ -35,11 +31,6 @@ function App() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar 
-<<<<<<< HEAD
-        isBackendConnected={isConnected} 
-        isCheckingConnection={isChecking}
-=======
->>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
         githubToken={githubToken}
         onGithubDisconnect={handleGithubDisconnect}
       />

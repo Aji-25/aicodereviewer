@@ -15,17 +15,6 @@ function Home({ githubToken }) {
     setReviewResult(result);
     setError(null);
     setIsAccepted(false);
-<<<<<<< HEAD
-  };
-
-  const handleReviewError = (errorMessage) => {
-    setError(errorMessage);
-  };
-
-  const handleCodeChange = (code) => {
-    setCurrentCode(code);
-=======
->>>>>>> 4d32dfc56f73753ccf7f3f5dafc8721e76ae536a
   };
 
   const handleAccept = () => {
