@@ -1,0 +1,31 @@
+{
+  "name": "aireviewmate",
+  "version": "1.0.0",
+  "description": "AI-powered code review assistant with GitHub integration",
+  "private": true,
+  "scripts": {
+    "install:all": "npm install --prefix server && npm install --prefix client",
+    "dev": "npm run dev:server & npm run dev:client",
+    "dev:server": "npm run dev --prefix server",
+    "dev:client": "npm run dev --prefix client",
+    "build": "npm run build --prefix client",
+    "start": "npm start --prefix server"
+  },
+  "keywords": [
+    "ai",
+    "code-review",
+    "gemini",
+    "github",
+    "react",
+    "express"
+  ],
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/aicode.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/aicode/issues"
+  },
+  "homepage": "https://github.com/yourusername/aicode#readme"
+}

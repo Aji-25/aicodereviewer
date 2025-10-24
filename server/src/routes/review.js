@@ -41,22 +41,15 @@ router.post('/review', rateLimiter, async (req, res, next) => {
     const { code, language } = req.body;
 
     // Validation
-    if (!code || typeof code !== 'string') {
+    if (!code || typeof code !== 'string' || code.trim().length === 0) {
       return res.status(400).json({
-        error: 'Code is required and must be a string'
+        error: 'Code is required and cannot be empty'
       });
     }
 
     if (!language || typeof language !== 'string') {
       return res.status(400).json({
-        error: 'Language is required and must be a string'
-      });
-    }
-
-    // Additional validation
-    if (code.trim().length === 0) {
-      return res.status(400).json({
-        error: 'Code cannot be empty'
+        error: 'Language is required'
       });
     }
 

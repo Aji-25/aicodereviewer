@@ -1,20 +1,19 @@
 import React, { useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import { CheckCircle, XCircle, Clipboard, Check } from 'lucide-react';
+import { CheckCircle, XCircle, Clipboard, Check, GitPullRequest } from 'lucide-react';
+import CreatePRModal from './CreatePRModal';
 
-function DiffView({ originalCode, improvedCode, explanation, category, onAccept, onDecline }) {
+function DiffView({ originalCode, improvedCode, explanation, category, onAccept, onDecline, githubToken, isAccepted }) {
   const [copied, setCopied] = useState(false);
+  const [showPRModal, setShowPRModal] = useState(false);
 
-  const getCategoryColor = (category) => {
-    const colors = {
-      'Best Practices': 'bg-blue-100 text-blue-700 border-blue-200',
-      'Better Performance': 'bg-green-100 text-green-700 border-green-200',
-      'Bug Fix': 'bg-red-100 text-red-700 border-red-200',
-      'Code Quality': 'bg-purple-100 text-purple-700 border-purple-200',
-      'Security': 'bg-orange-100 text-orange-700 border-orange-200',
-      'Readability': 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    };
-    return colors[category] || 'bg-gray-100 text-gray-700 border-gray-200';
+  const categoryColors = {
+    'Best Practices': 'bg-blue-100 text-blue-700 border-blue-200',
+    'Better Performance': 'bg-green-100 text-green-700 border-green-200',
+    'Bug Fix': 'bg-red-100 text-red-700 border-red-200',
+    'Code Quality': 'bg-purple-100 text-purple-700 border-purple-200',
+    'Security': 'bg-orange-100 text-orange-700 border-orange-200',
+    'Readability': 'bg-indigo-100 text-indigo-700 border-indigo-200',
   };
 
   const handleCopy = async () => {
@@ -64,7 +63,7 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
         <div className="p-4 space-y-4">
           {/* Category Badge */}
           <div className="flex items-center gap-2">
-            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${getCategoryColor(category)}`}>
+            <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${categoryColors[category] || 'bg-gray-100 text-gray-700 border-gray-200'}`}>
               {category}
             </span>
           </div>
@@ -95,9 +94,10 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
             <button
               onClick={onAccept}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+              disabled={isAccepted}
             >
               <CheckCircle className="w-4 h-4" />
-              Accept Changes
+              {isAccepted ? 'Changes Accepted' : 'Accept Changes'}
             </button>
             
             <button
@@ -125,8 +125,43 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
               Decline
             </button>
           </div>
+
+          {/* Create Pull Request Button - Only visible after acceptance */}
+          {isAccepted && githubToken && (
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <button
+                onClick={() => setShowPRModal(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm"
+              >
+                <GitPullRequest className="w-4 h-4" />
+                Create Pull Request on GitHub
+              </button>
+            </div>
+          )}
+
+          {/* Info message if not connected to GitHub */}
+          {isAccepted && !githubToken && (
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                <p className="text-sm text-blue-800">
+                  Connect to GitHub to create a pull request with these changes
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Create PR Modal */}
+      {showPRModal && (
+        <CreatePRModal
+          improvedCode={improvedCode}
+          category={category}
+          explanation={explanation}
+          githubToken={githubToken}
+          onClose={() => setShowPRModal(false)}
+        />
+      )}
     </div>
   );
 }

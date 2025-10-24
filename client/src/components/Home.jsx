@@ -3,37 +3,31 @@ import { Sparkles, AlertCircle } from 'lucide-react';
 import CodeEditor from './CodeEditor';
 import DiffView from './DiffView';
 
-function Home() {
+function Home({ githubToken }) {
   const [reviewResult, setReviewResult] = useState(null);
   const [error, setError] = useState(null);
   const [currentCode, setCurrentCode] = useState('');
+  const [isAccepted, setIsAccepted] = useState(false);
   
   const editorRef = useRef(null);
 
   const handleReviewResult = (result) => {
     setReviewResult(result);
     setError(null);
-  };
-
-  const handleReviewError = (errorMessage) => {
-    setError(errorMessage);
-  };
-
-  const handleCodeChange = (code) => {
-    setCurrentCode(code);
+    setIsAccepted(false);
   };
 
   const handleAccept = () => {
     if (reviewResult && editorRef.current) {
       editorRef.current.updateCode(reviewResult.improvedCode);
-      setReviewResult(null);
-      setError(null);
+      setIsAccepted(true);
     }
   };
 
   const handleDecline = () => {
     setReviewResult(null);
     setError(null);
+    setIsAccepted(false);
   };
 
   return (
@@ -42,8 +36,8 @@ function Home() {
       <CodeEditor 
         ref={editorRef}
         onReviewResult={handleReviewResult}
-        onReviewError={handleReviewError}
-        onCodeChange={handleCodeChange}
+        onReviewError={setError}
+        onCodeChange={setCurrentCode}
       />
 
       {/* Right Panel - AI Suggestions or Diff View */}
@@ -55,6 +49,8 @@ function Home() {
           category={reviewResult.category}
           onAccept={handleAccept}
           onDecline={handleDecline}
+          githubToken={githubToken}
+          isAccepted={isAccepted}
         />
       ) : (
         <div className="flex-1 flex flex-col bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden">
