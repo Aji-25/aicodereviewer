@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import reviewRoutes from './routes/review.js';
+import githubRouter from './routes/github.js';
 
 // Load environment variables
 dotenv.config();
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || 'http://localhost:5173',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 app.use(express.json());
@@ -34,6 +36,7 @@ app.get('/health', (req, res) => {
 
 // API routes
 app.use('/api', reviewRoutes);
+app.use('/api/github', githubRouter);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -55,4 +58,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
   console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 GitHub OAuth endpoints available at /api/github/*`);
 });

@@ -1,7 +1,11 @@
 import React from 'react';
-import { Code2, Activity } from 'lucide-react';
+import { Code2, Activity, Github, LogOut } from 'lucide-react';
 
-function Navbar({ isBackendConnected, isCheckingConnection }) {
+function Navbar({ isBackendConnected, isCheckingConnection, githubToken, onGithubDisconnect }) {
+  const handleGithubConnect = () => {
+    window.location.href = 'http://localhost:3000/api/github/login';
+  };
+
   return (
     <nav className="bg-white border-b border-gray-200 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,30 +25,58 @@ function Navbar({ isBackendConnected, isCheckingConnection }) {
             </div>
           </div>
 
-          {/* Backend Status Indicator */}
-          <div className="flex items-center space-x-2">
-            <Activity 
-              className={`w-4 h-4 ${
+          {/* Right Side - Status & GitHub */}
+          <div className="flex items-center space-x-4">
+            {/* Backend Status Indicator */}
+            <div className="flex items-center space-x-2">
+              <Activity 
+                className={`w-4 h-4 ${
+                  isCheckingConnection 
+                    ? 'text-yellow-500 animate-pulse' 
+                    : isBackendConnected 
+                      ? 'text-green-500' 
+                      : 'text-red-500'
+                }`} 
+              />
+              <span className={`text-sm font-medium ${
                 isCheckingConnection 
-                  ? 'text-yellow-500 animate-pulse' 
+                  ? 'text-yellow-600' 
                   : isBackendConnected 
-                    ? 'text-green-500' 
-                    : 'text-red-500'
-              }`} 
-            />
-            <span className={`text-sm font-medium ${
-              isCheckingConnection 
-                ? 'text-yellow-600' 
-                : isBackendConnected 
-                  ? 'text-green-600' 
-                  : 'text-red-600'
-            }`}>
-              {isCheckingConnection 
-                ? 'Checking...' 
-                : isBackendConnected 
-                  ? 'Connected' 
-                  : 'Disconnected'}
-            </span>
+                    ? 'text-green-600' 
+                    : 'text-red-600'
+              }`}>
+                {isCheckingConnection 
+                  ? 'Checking...' 
+                  : isBackendConnected 
+                    ? 'Connected' 
+                    : 'Disconnected'}
+              </span>
+            </div>
+
+            {/* GitHub Connect/Disconnect Button */}
+            {githubToken ? (
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-green-50 border border-green-200 rounded-lg">
+                  <Github className="w-4 h-4 text-green-700" />
+                  <span className="text-sm font-medium text-green-700">Connected to GitHub</span>
+                </div>
+                <button
+                  onClick={onGithubDisconnect}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100 transition-colors"
+                  title="Disconnect GitHub"
+                >
+                  <LogOut className="w-4 h-4 text-red-700" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={handleGithubConnect}
+                className="flex items-center gap-2 px-4 py-2 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm"
+              >
+                <Github className="w-4 h-4" />
+                Connect GitHub
+              </button>
+            )}
           </div>
         </div>
       </div>

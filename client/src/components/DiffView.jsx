@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import ReactDiffViewer from 'react-diff-viewer-continued';
-import { CheckCircle, XCircle, Clipboard, Check } from 'lucide-react';
+import { CheckCircle, XCircle, Clipboard, Check, GitPullRequest } from 'lucide-react';
+import CreatePRModal from './CreatePRModal';
 
-function DiffView({ originalCode, improvedCode, explanation, category, onAccept, onDecline }) {
+function DiffView({ originalCode, improvedCode, explanation, category, onAccept, onDecline, githubToken, isAccepted }) {
   const [copied, setCopied] = useState(false);
+  const [showPRModal, setShowPRModal] = useState(false);
 
   const getCategoryColor = (category) => {
     const colors = {
@@ -95,9 +97,10 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
             <button
               onClick={onAccept}
               className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors shadow-sm"
+              disabled={isAccepted}
             >
               <CheckCircle className="w-4 h-4" />
-              Accept Changes
+              {isAccepted ? 'Changes Accepted' : 'Accept Changes'}
             </button>
             
             <button
@@ -125,8 +128,43 @@ function DiffView({ originalCode, improvedCode, explanation, category, onAccept,
               Decline
             </button>
           </div>
+
+          {/* Create Pull Request Button - Only visible after acceptance */}
+          {isAccepted && githubToken && (
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <button
+                onClick={() => setShowPRModal(true)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-lg hover:bg-gray-800 transition-colors shadow-sm"
+              >
+                <GitPullRequest className="w-4 h-4" />
+                Create Pull Request on GitHub
+              </button>
+            </div>
+          )}
+
+          {/* Info message if not connected to GitHub */}
+          {isAccepted && !githubToken && (
+            <div className="pt-3 border-t border-gray-200 mt-3">
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
+                <p className="text-sm text-blue-800">
+                  Connect to GitHub to create a pull request with these changes
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Create PR Modal */}
+      {showPRModal && (
+        <CreatePRModal
+          improvedCode={improvedCode}
+          category={category}
+          explanation={explanation}
+          githubToken={githubToken}
+          onClose={() => setShowPRModal(false)}
+        />
+      )}
     </div>
   );
 }
